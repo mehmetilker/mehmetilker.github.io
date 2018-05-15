@@ -1,5 +1,5 @@
 name: kendine log
-theme: Hacker
+theme: jekyll-theme-leap-day
 title: Welcome to my github blog test page.
 desription: I will update this one with the one at blogger.
 markdown: kramdown
