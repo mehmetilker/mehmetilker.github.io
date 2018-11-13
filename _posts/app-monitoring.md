@@ -122,68 +122,33 @@ ContextId="8000007d-0000-fe00-b63f-84710c7967bb" ile Applicaton Request Event'le
 
 
 https://github.com/tomasr/iis-etw-tracing
-
-
-
 https://github.com/Microsoft/perfview/blob/master/documentation/TraceEvent/TraceEventProgrammersGuide.md
-
-
-
 https://github.com/Microsoft/perfview/blob/master/documentation/TraceEvent/TraceEventLibrary.md
-
 !!!
-
 https://github.com/Microsoft/dotnet-samples/blob/master/Microsoft.Diagnostics.Tracing/TraceEvent/docs/TraceEvent.md
-
 Genel kavramlar anlatılıyor:
-
 Saniyede 10 bin event den fazlası kaynak sıkıntısı yaratıyor.
-
 Event yayını buffer'lı çalıştığı için geçikme olabiliyor (3 saniye kadar)
 
 
-
-
-
 https://github.com/neuecc/EtwStream
-
 
 
 Samples
 
 https://github.com/Microsoft/perfview/tree/master/src/TraceEvent/Samples
 
-
-
-
-
 ?
-
 https://github.com/Azure/diagnostics-eventflow
-
-
-
-
-
 IISLog parse
 
 https://github.com/alexnolasco/32120528/
 
 https://github.com/Microsoft/Tx (ETW üzerinden)
 
-
-
-
-
-
-
 Power shell ile performance counter okuma
 
 https://hodgkins.io/using-powershell-to-send-metrics-graphite
-
-
-
-
 
 Diğer Event okuma alternatifleri
 
@@ -198,41 +163,19 @@ https://www.elastic.co/guide/en/beats/filebeat/master/filebeat-module-iis.html
 
 
 
-
-
-
 # Event Kaydetme - Okuma
 
 
 Alternatiflerden biri: Elastic Search
-
-
-
 Docker
-
 https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
-
 config/elasticsearch.yml
-
 RUN echo "http.cors.enabled: true" &gt;&gt; /usr/share/elasticsearch/config/elasticsearch.yml
-
 RUN echo "http.cors.allow-origin: '*'" &gt;&gt; /usr/share/elasticsearch/config/elasticsearch.yml
-
-
-
 docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.3.2
 
-
-
-
-
 .net api
-
 https://github.com/elastic/elasticsearch-net
-
-
-
-
 
 ES için date / timestamp formatı
 
@@ -246,74 +189,6 @@ https://discuss.elastic.co/t/how-to-configure-index-pattern-to-use-custom-timest
 
 https://support.logz.io/hc/en-us/articles/210206285-How-can-I-make-sure-the-timestamp-is-properly-parsed-
 
-
-
-
-
---System.Net namespace kullanan uygulamadan (HttpWebRequest) giden istekleri trace etmek için
-
-web.config e diagnostic element i eklenir.
-
-Event lerin yazılacağı alternatifler
-
-text dosya, xml dosya, console, ETW, EventLog
-
-https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/trace-listeners
-
-Interpreting Network Tracing
-
-https://docs.microsoft.com/en-us/dotnet/framework/network-programming/interpreting-network-tracing
-
-App.config e eklenmesi gereken:
-
-https://docs.microsoft.com/en-us/dotnet/framework/network-programming/how-to-configure-network-tracing
-
-ETW Tracing ve diğerleri için SharedListeners örneği:
-
-```xml
-<sharedListeners>
-
-      <add name="MyConsole" type="System.Diagnostics.ConsoleTraceListener"/>
-
-      <add name="MyTraceFile" type="System.Diagnostics.TextWriterTraceListener" initializeData="System.Net.trace.log" traceOutputOptions="DateTime, ProcessId, ThreadId" />
-
-      <!--traceOutputOptions="Timestamp" traceOutputOptions="LogicalOperationStack, DateTime, Timestamp, Callstack"-->
-
-      <add name="ETWListener" initializeData="{BDE5930E-34C9-4E2F-A6EC-89E1F1EA69CC}"
-
-           type="System.Diagnostics.Eventing.EventProviderTraceListener, System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-
-      <add name="MyEventLog" initializeData="XAppTraceListenerLog" type="System.Diagnostics.EventLogTraceListener" />
-
-    </sharedListeners>
-```
-
-### Data / Ado.net trace için
-
-https://lowleveldesign.org/2012/09/07/diagnosing-ado-net-with-etw-traces/
-
-https://msdn.microsoft.com/en-us/library/ms971550.aspx?f=255&MSPPError=-2147217396		
-
-https://www.developer.com/net/csharp/article.php/10918_3723011_2/ADONET-Trace-Logging.htm
-
-https://www.codeguru.com/csharp/.net/net_debugging/logging/article.php/c14769/ADONET-Trace-Logging.htm
-
-
-CLR Events
-
-https://docs.microsoft.com/en-us/dotnet/framework/performance/etw-events-in-the-common-language-runtime
-
-https://docs.microsoft.com/en-us/dotnet/framework/performance/clr-etw-providers
-
-https://docs.microsoft.com/en-us/dotnet/framework/performance/clr-etw-events
-
-
-
-CLR Event'ler için Performance Counter yerine ETW'yi kullanmayı öneriyor.
-
-http://labs.criteo.com/2018/06/replace-net-performance-counters-by-clr-event-tracing/
-
-http://labs.criteo.com/2018/07/grab-etw-session-providers-and-events/
 
 
 ### Sorgulama 
