@@ -12,11 +12,10 @@ https://www.nuget.org/packages/Microsoft.Diagnostics.Tracing.TraceEvent
 
 ### Tracing alternatifleri
 
-> CMD logman	
-> APP Performance Monitor > Data Collector Sets > Event Trace Session > [New Data Collector Set] + Providers	
-> APP PerfView > Collect	
-> CODE Microsoft.Diagnostics.Tracing.TraceEvent library	
-
+> CMD logman
+> APP Performance Monitor > Data Collector Sets > Event Trace Session > [New Data Collector Set] + Providers
+> APP PerfView > Collect
+> CODE Microsoft.Diagnostics.Tracing.TraceEvent library
 
 ### Kod ile süreç:
 Trace işlemi için önce bir session ve bu session üzerinde istenen Event Provider'lar aktfi edilmeli.
