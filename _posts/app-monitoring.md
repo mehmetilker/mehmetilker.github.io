@@ -1,13 +1,10 @@
 İzleme çözümü 3 adımdan oluşur.
 
-
-
-Event okuma
-
-Event kaydetme
-
-Görüntüleme
-
+- [Monitoring - Veri kaydetme + Görüntüleme çözümleri](#monitoring---veri-kaydetme--g%C3%B6r%C3%BCnt%C3%BCleme-%C3%A7%C3%B6z%C3%BCmleri)
+    - [Bütünleşik hazır çözüm olarak ELK:](#b%C3%BCt%C3%BCnle%C5%9Fik-haz%C4%B1r-%C3%A7%C3%B6z%C3%BCm-olarak-elk)
+- [Event Kaydetme - Okuma](#event-kaydetme---okuma)
+        - [Sorgulama](#sorgulama)
+- [Event Görüntüleme](#event-g%C3%B6r%C3%BCnt%C3%BCleme)
 
 
 # Monitoring  - Veri kaydetme + Görüntüleme çözümleri
@@ -45,110 +42,8 @@ Veri tabanına (Time series DB) yazma probleminde veriyi gönderen tekrar yazabi
 Belirli aralıklarla bu dosya temizlenmeli.
 
 Event Okuma
-IIS için Log seçeneklerinden ETW aktif edilmelidir. (File + ETW)
+Detaylar ETW-Detaylar yayınında
 
-
-
-
-
-Performance Monitor de önce session tanımlanır (Event Trace Sessions) ya da mevcut session tanımına Provider eklenir.
-
-Provider ayarları: Provider detaylarında Level ve diğer seçenekler belirtilir.
-
-
-
-Session ayarları: Real time ve/veya File seçimi yapılır.
-
-Session ne kadar süre aktif kalacak ve Windows Start up da otomatik başlatılacak mı gibi tanımlar da yapılabilir.
-
-
-
-Log takibi için:
-
-1. .etl dosyaları "Event Viewer" ile açılır. Yada LogParser kullanılarak .csv formatına çevrilir.
-
-2. Real time loglar session adı belirtilerek ETWTraceEventSource class'ı (Microsoft.Diagnostics.Tracing.TraceEvent) ile takip edilir.
-
-Eğer istenilen Provider (örn: "Microsoft-Windows-IIS-Logging") tanımlı bir session'da ekli değilse.
-
-var session = new TraceEventSession(sessionName, null) class kullanılarak session oluşturulabilir ve
-
-session.EnableProvider("Microsoft-Windows-IIS-Logging", TraceEventLevel.Informational, 0x10);
-
-ile istenen provider o session'da aktif edilir.
-
-
-
-IIS Log için ETW etkin duruma getirildikten sonra  (Site settings&gt; Logging)
-
-Event Viewer da takip için&gt;  Applications and services logs &gt; Microsoft &gt; Windows &gt; IIS Logging &gt; Logs : Sağ tuş Enable demek gerekiyor.
-
-Ya da uygulama ile session oluşturup "Microsoft-Windows-IIS-Logging" provider'i ile loglar takip edilebilir.
-
-
-
--Takip edilecek 3 şey
-
-Http Logs
-
-Failed Trace Logs
-
-Http Err Logs
-
-
-
-
-
-ETW de bir web requesti için Provider a göre farklı event ler üretiliyor.
-
-Http-log için örneğin tek bir event.
-
-asp.net / asp için her bir app event a karşılık bir ETW event.
-
-Begin_Request
-
-Error
-
-...
-
-End_Request
-
-ContextId="8000007d-0000-fe00-b63f-84710c7967bb" ile Applicaton Request Event'ler eşleştirilebilir.
-
-Örnek uygulama: https://github.com/tomasr/frebrilator
-
-
-
-
-
-https://github.com/tomasr/iis-etw-tracing
-https://github.com/Microsoft/perfview/blob/master/documentation/TraceEvent/TraceEventProgrammersGuide.md
-https://github.com/Microsoft/perfview/blob/master/documentation/TraceEvent/TraceEventLibrary.md
-!!!
-https://github.com/Microsoft/dotnet-samples/blob/master/Microsoft.Diagnostics.Tracing/TraceEvent/docs/TraceEvent.md
-Genel kavramlar anlatılıyor:
-Saniyede 10 bin event den fazlası kaynak sıkıntısı yaratıyor.
-Event yayını buffer'lı çalıştığı için geçikme olabiliyor (3 saniye kadar)
-
-
-https://github.com/neuecc/EtwStream
-
-
-Samples
-
-https://github.com/Microsoft/perfview/tree/master/src/TraceEvent/Samples
-
-?
-https://github.com/Azure/diagnostics-eventflow
-IISLog parse
-
-https://github.com/alexnolasco/32120528/
-
-https://github.com/Microsoft/Tx (ETW üzerinden)
-
-Power shell ile performance counter okuma
-
-https://hodgkins.io/using-powershell-to-send-metrics-graphite
 
 Diğer Event okuma alternatifleri
 
@@ -203,6 +98,8 @@ https://www.timroes.de/2016/05/29/elasticsearch-kibana-queries-in-depth-tutorial
 https://dzone.com/articles/23-useful-elasticsearch-example-queries
 
 
+!status:(200 OR 206 OR 404 OR 302 OR 304 OR 301) && host:"$host"
+
 
 Query doc
 
@@ -251,6 +148,7 @@ https://github.com/lmenezes/cerebro
 https://github.com/mobz/elasticsearch-head
 
 
+!!! ElasticSearch Monitoring and Maintenance tools research
 https://medium.com/@dionnis/elasticsearch-monitoring-and-maintenance-tools-research-18c5fb45a747
 
 
@@ -276,113 +174,7 @@ compose da network alanı ile bu sağlanır.
 
 
 
-ETW Diğer notlar
-ETW Kavram detayları
 
-https://docs.microsoft.com/en-us/message-analyzer/common-provider-configuration-settings-summary
-
-https://docs.microsoft.com/en-us/message-analyzer/system-etw-provider-event-keyword-level-settings
-
-
-
-
-
-Araç:
-
-http://lallouslab.net/2016/01/25/windows-events-providers-explorer/
-
-Windows Events Providers Explorer
-
-Sistemde hangi Event Provider'lar var ve hangi event'ler sağlanıyor bilgisi.
-
-
-
-
-
-logman kullanımı
-
-https://blogs.technet.microsoft.com/askperf/2008/05/13/two-minute-drill-logman-exe/
-
-https://blogs.msdn.microsoft.com/sudeepg/2009/02/26/capturing-and-analyzing-an-etw-trace-event-tracing-for-windows/
-
-
-
-Powershell den (Admin elev.) event listeleme
-
-Get-WinEvent Microsoft-IIS-Logging/Logs
-
-tüm event log listesi
-
-Get-WinEvent -ListLog * | Format-List -Property LogName
-
-https://letitknow.wordpress.com/2012/09/02/powershell-and-the-applications-and-services-logs/
-
-
-
-appcmd list ile
-
-IIS Currently executing request
-
- elevated command line
-
- %windir%\system32\inetsrv\appcmd list requests 
-
- %windir%\system32\inetsrv\appcmd list requests /elapsed:5000
-
- In a loop (assuming you are in %windir%\system32\inetsrv\
-
- for /l %x in (,,) do (appcmd list requests /elapsed:5000 &amp; timeout 2)
-
- https://docs.microsoft.com/en-us/iis/troubleshoot/using-failed-request-tracing/troubleshoot-with-failed-request-tracing
-
-Failed Request Tracing - cmd 
-
- %windir%\system32\inetsrv\appcmd configure trace "Default Web Site" /enablesite 
-
- %windir%\system32\inetsrv\appcmd configure trace "Default Web Site" /enable /path:test.aspx /timeTaken:00:00:30
-
- appcmd list traces | findstr "test.aspx"
-
- http://mvolo.com/troubleshoot-iis-hanging-requests/
-
-
-
-UIforETW
-
-https://randomascii.wordpress.com/2015/04/14/uiforetw-windows-performance-made-easier/
-
-https://github.com/google/UIforETW
-
-https://randomascii.wordpress.com/2015/09/24/etw-central/
-
-
-
-
-
-
-
-Consume ETW events
-https://blogs.msdn.microsoft.com/dotnet/2013/08/15/announcing-traceevent-monitoring-and-diagnostics-for-the-cloud/
-
-https://blogs.msdn.microsoft.com/vancem/2013/08/15/traceevent-etw-library-published-as-a-nuget-package/
-
-https://blogs.msdn.microsoft.com/vancem/2014/03/15/walk-through-getting-started-with-etw-traceevent-nuget-samples-package/
-
-https://www.nuget.org/packages/Microsoft.Diagnostics.Tracing.TraceEvent/
-
-EtwTraceEventSource which lets you read the stream of ETW events
-
-
-
-
-
-How to Setup Event Trace Session
-
-&gt;Performance Monitor &gt; Event Trace Session
-
-http://blogs.msdn.com/danielvl/archive/2009/01/25/view-etw-rewrite-events.aspx
-
-https://blogs.msdn.microsoft.com/danielvl/2009/02/02/how-to-consume-etw-events-from-c/
 
 
 
@@ -421,15 +213,6 @@ logman query providers &gt; providers.txt
 
 
 
-
-Using Failed Request Tracing to Trace Rewrite Rules
-
-UrlRewrite trace event detayları adım adım açıklanmış
-
-https://docs.microsoft.com/en-us/iis/extensions/url-rewrite-module/using-failed-request-tracing-to-trace-rewrite-rules
-
-
-
 Performance Monitor üzerinde tanım yapılarak
 
 How to display URL Rewrite ETW Events in the Event Viewer
@@ -442,44 +225,6 @@ Provider: IIS: WWW Server
 
 
 
-How to display URL Rewrite ETW Events in the Event Viewer
-
-https://blogs.msdn.microsoft.com/danielvl/2009/01/25/how-to-display-url-rewrite-etw-events-in-the-event-viewer/
-
-
-
-
-
-İstek akışı anlatımı
-
-IIS Request-Based Tracing
-
-https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2003/cc786920(v%3dws.10)
-
-
-
-Ado.net i etw için ayarlama
-
-https://www.codeguru.com/csharp/.net/net_debugging/logging/article.php/c14769/ADONET-Trace-Logging.htm
-
-https://lowleveldesign.org/2012/09/07/diagnosing-ado-net-with-etw-traces/
-
-
-
-
-
-
-
-
-
-EventSource kayıt açmak için
-
-https://blogs.msdn.microsoft.com/vancem/2014/03/15/walk-through-getting-started-with-etw-traceevent-nuget-samples-package/
-
-In a previous post, I talked about the TraceEvent NuGet Library, which allows you to read and manipulate Event Tracing for Windws (ETW).   
-
-There is a companion post about the EventSource  NuGet package which allows you to create your own ETW events (or in fact to send those events to anywhere you choose).
-
 
 
 
@@ -487,10 +232,7 @@ There is a companion post about the EventSource  NuGet package which allows you 
 Tanıtım ve IE örneği
 
 https://blogs.msdn.microsoft.com/ntdebugging/2009/08/27/part-1-etw-introduction-and-overview/
-
 https://blogs.msdn.microsoft.com/ntdebugging/2009/09/08/part-2-exploring-and-decoding-etw-providers-using-event-log-channels/
-
-
 
 
 
@@ -502,40 +244,9 @@ https://randomascii.wordpress.com/2015/04/14/uiforetw-windows-performance-made-e
 
 
 
-Diğer
-
-https://blogs.msdn.microsoft.com/vancem/2012/12/20/using-tracesource-to-log-etw-data-to-a-file/
-
 örnekler
 
 http://book2s.com/csharp/api/microsoft/microsoft.diagnostics.tracing.session/traceeventsession/enableprovider-4.html
-
-
-
-
-
-!!!
-
-Uygulama açılış kapanışlarını takip etmek için
-
-https://blogs.msdn.microsoft.com/vancem/2013/03/09/using-traceevent-to-mine-information-in-os-registered-etw-providers/
-
-"EventLog-Application"
-
-"Microsoft-Windows-Kernel-Process" provider kullanıyor.
-
-session.EnableProvider("Microsoft-Windows-Kernel-Process", TraceEventLevel.Informational, 0x10);
-
-
-
-https://randomascii.wordpress.com/2016/03/08/power-wastage-on-an-idle-laptop/
-
-https://randomascii.wordpress.com/2015/09/01/xperf-basics-recording-a-trace-the-ultimate-easy-way/
-
-
-
-
-
 
 
 işlem başarılı olarak tamamlanmış ama client timeout süresi dolduğu için hataya düşmüş:
@@ -546,16 +257,4 @@ https://docs.microsoft.com/en-us/windows/desktop/api/winhttp/nf-winhttp-winhttps
 
 
 
-Thermal management - fan sıcaklığı vs.
 
-Kod örneği yok.
-
-https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/thermal-management-in-windows
-
-örnek uygulama
-
-Open hardware monitor
-
-
-
-https://openhardwaremonitor.org/screenshots/
