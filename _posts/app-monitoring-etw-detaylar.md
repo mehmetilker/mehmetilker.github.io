@@ -1,14 +1,16 @@
 
 
 Bir uygulada log tutuluyorsa ve ve bu loglar ETW'ye yönlendirilebiliyorsa, aşağıdaki kütüphaneler ile ETW'ye subscribe olup, Provider+Event filtreleme yöntemiyle bu event'ler toplanabilir.
+
 Örnek: IIS logları, bir uygulamadaki System.Net namespace'i altındaki operasyonlar (HttpWebRequest), Ado.Net, .NET CLR Events
 
-Bir uygulamadan ETW'ye log yazmak için: EventSource
+>Bir uygulamadan ETW'ye log yazmak için: EventSource
 https://www.nuget.org/packages/Microsoft.Diagnostics.Tracing.EventSource/
 
-Okumak için: TraceEvent 
+>Okumak için: TraceEvent
 https://www.nuget.org/packages/Microsoft.Diagnostics.Tracing.TraceEvent
 
+Süreç:
 Trace işlemi için önce bir session ve bu session üzerinde istenen Event Provider'lar aktfi edilmeli.
 Proviver listesi:
 ```CMD
@@ -22,16 +24,12 @@ https://blogs.msdn.microsoft.com/dotnet/2013/08/15/announcing-traceevent-monitor
 
 
 
+# Uygulamada app.config ile tracing
 
-
---System.Net namespace kullanan uygulamadan (HttpWebRequest) giden istekleri trace etmek için
-
+System.Net namespace kullanan uygulamadan (HttpWebRequest) giden istekleri trace etmek için:
 web.config e diagnostic element i eklenir.
-
-Event lerin yazılacağı alternatifler
-
+Event lerin yazılabileceği alternatifler
 text dosya, xml dosya, console, ETW, EventLog
-
 
 https://docs.microsoft.com/en-us/dotnet/framework/network-programming/interpreting-network-tracing
 App.config e eklenmesi gereken:
