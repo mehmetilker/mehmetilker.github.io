@@ -10,7 +10,15 @@ https://www.nuget.org/packages/Microsoft.Diagnostics.Tracing.EventSource/
 >Okumak için: TraceEvent
 https://www.nuget.org/packages/Microsoft.Diagnostics.Tracing.TraceEvent
 
-Süreç:
+## Tracing alternatifleri
+
+CMD logman
+APP Performance Monitor > Data Collector Sets > Event Trace Session > [New Data Collector Set] + Providers
+APP PerfView > Collect
+CODE Microsoft.Diagnostics.Tracing.TraceEvent library
+
+
+### Kod ile süreç:
 Trace işlemi için önce bir session ve bu session üzerinde istenen Event Provider'lar aktfi edilmeli.
 Proviver listesi:
 ```CMD
@@ -24,42 +32,18 @@ https://blogs.msdn.microsoft.com/dotnet/2013/08/15/announcing-traceevent-monitor
 
 
 
-# Uygulamada app.config ile tracing
 
-System.Net namespace kullanan uygulamadan (HttpWebRequest) giden istekleri trace etmek için:
-web.config e diagnostic element i eklenir.
-Event lerin yazılabileceği alternatifler
-text dosya, xml dosya, console, ETW, EventLog
+### logman ile session oluşturmak
 
-https://docs.microsoft.com/en-us/dotnet/framework/network-programming/interpreting-network-tracing
-App.config e eklenmesi gereken:
-
-https://docs.microsoft.com/en-us/dotnet/framework/network-programming/how-to-configure-network-tracing
-
-ETW Tracing ve diğerleri için SharedListeners örneği:
-
-```XML
-
-<sharedListeners>
-
-      <add name="MyConsole" type="System.Diagnostics.ConsoleTraceListener"/>
-
-      <add name="MyTraceFile" type="System.Diagnostics.TextWriterTraceListener" initializeData="System.Net.trace.log" traceOutputOptions="DateTime, ProcessId, ThreadId" />
-
-      <!--traceOutputOptions="Timestamp" traceOutputOptions="LogicalOperationStack, DateTime, Timestamp, Callstack"-->
-
-      <add name="ETWListener" initializeData="{BDE5930E-34C9-4E2F-A6EC-89E1F1EA69CC}"
-
-           type="System.Diagnostics.Eventing.EventProviderTraceListener, System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-
-      <add name="MyEventLog" initializeData="XAppTraceListenerLog" type="System.Diagnostics.EventLogTraceListener" />
-
-    </sharedListeners>
-```
+session adı ve aktif edilmesi istenen provider belirtilir.
+Event'ler oluşturulduktan sonra stop.
+Olıuşan .etl dosyasını okuyabilmek için .csv ya da .xml çevrimi.
+Event Viewer ile de olkunabilir.
 
 ```CMD
 WinInet ile sadece internet explorer/edge isteklerini takip
 logman start "wininettrace"  -p "microsoft-windows-wininet" -o "wininettrace.etl" -ets
+--event'leri bekle
 logman stop "wininettrace" -ets
 tracerpt "wininettrace.etl" -y -o "wininetracelog.xml" -of xml
 ```
@@ -79,6 +63,35 @@ logman start "xappsession" -p "{BDE5930E-34C9-4E2F-A6EC-89E1F1EA69CC}" -o "xapps
 logman stop "xappsession" -ets
 tracerpt xappsystemnet.etl -of csv -o xappsystemnet.csv // tracerpt "xappsystemnet.etl" -y -o "xappsystemnet.xml" -of xml
 ```
+
+
+# Uygulamada app.config ile tracing
+
+System.Net namespace kullanan uygulamadan (HttpWebRequest) giden istekleri trace etmek için:
+web.config e diagnostic element i eklenir.
+Event lerin yazılabileceği alternatifler
+text dosya, xml dosya, console, ETW, EventLog
+
+https://docs.microsoft.com/en-us/dotnet/framework/network-programming/interpreting-network-tracing
+App.config e eklenmesi gereken:
+
+
+
+ETW Tracing ve diğerleri için SharedListeners örneği:
+
+```XML
+--Diagnostics node u için tam örnek:
+--https://docs.microsoft.com/en-us/dotnet/framework/network-programming/how-to-configure-network-tracing
+<sharedListeners>
+      <add name="MyConsole" type="System.Diagnostics.ConsoleTraceListener"/>
+      <add name="MyTraceFile" type="System.Diagnostics.TextWriterTraceListener" initializeData="System.Net.trace.log" traceOutputOptions="DateTime, ProcessId, ThreadId" />
+      <!--traceOutputOptions="Timestamp" traceOutputOptions="LogicalOperationStack, DateTime, Timestamp, Callstack"-->
+      <add name="ETWListener" initializeData="{BDE5930E-34C9-4E2F-A6EC-89E1F1EA69CC}"
+           type="System.Diagnostics.Eventing.EventProviderTraceListener, System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+      <add name="MyEventLog" initializeData="XAppTraceListenerLog" type="System.Diagnostics.EventLogTraceListener" />
+    </sharedListeners>
+```
+
 
 ### github üzerinde proje bilgileri
 https://github.com/Microsoft/perfview/blob/master/documentation/TraceEvent/TraceEventLibrary.md
@@ -109,6 +122,30 @@ http://labs.criteo.com/2018/07/grab-etw-session-providers-and-events/
 
 https://docs.microsoft.com/en-us/windows/desktop/http/types-of-errors-logged-by-the-http-server-api
 HTTPERR: Types of Errors Logged by the HTTP Server API
+
+
+## Event yöntemi için Reactive kullanımı
+
+Bir işlem bir event için gerekli değil ama bir işlem için birden fazla event yayınlanan durumlarda (Farklı provider'lardan birbiriyle  ilişkili Start ... Stop) event'leri gruplayıp (merge işlemi) üzerinde çalışmak gerektiğinde Observable sınıfı kullanılabilir.
+
+ETW-Reactive
+https://github.com/tomasr/iis-etw-tracing
+https://github.com/tomasr/frebrilator/blob/master/Frebrilator/EventAggregator.cs
+https://github.com/neuecc/EtwStream
+https://github.com/Microsoft/perfview/tree/master/src/TraceEvent/Samples
+
+
+Reactive 
+https://www.tonytruong.net/starting-reactive-extensions-with-existing-events-in-c/
+https://blogs.endjin.com/2014/04/event-stream-manipulation-using-rx-part-1/
+https://blogs.endjin.com/2014/05/event-stream-manipulation-using-rx-part-2/
+http://reactivex.io/tutorials.html
+http://reactivex.io/documentation/operators.html#combining
+https://github.com/Microsoft/Tx/blob/master/Doc/Readme.md
+https://github.com/Microsoft/Tx/blob/master/Samples/LinqPad/Queries/IE_IIS/Readme.md
+https://github.com/Microsoft/Tx
+
+
 
 
 
