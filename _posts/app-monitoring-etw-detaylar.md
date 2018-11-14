@@ -1,13 +1,25 @@
 
 
-https://github.com/Microsoft/perfview/blob/master/documentation/TraceEvent/TraceEventLibrary.md
-The Microsoft.Diagnostics.Tracing.TraceEvent Library
-https://github.com/Microsoft/Microsoft.Diagnostics.Tracing.Logging
-Logging using ETW and EventSource
+Bir uygulada log tutuluyorsa ve ve bu loglar ETW'ye yönlendirilebiliyorsa, aşağıdaki kütüphaneler ile ETW'ye subscribe olup, Provider+Event filtreleme yöntemiyle bu event'ler toplanabilir.
+Örnek: IIS logları, bir uygulamadaki System.Net namespace'i altındaki operasyonlar (HttpWebRequest), Ado.Net, .NET CLR Events
 
+Bir uygulamadan ETW'ye log yazmak için: EventSource
+https://www.nuget.org/packages/Microsoft.Diagnostics.Tracing.EventSource/
 
-https://docs.microsoft.com/en-us/windows/desktop/http/types-of-errors-logged-by-the-http-server-api
-HTTPERR: Types of Errors Logged by the HTTP Server API
+Okumak için: TraceEvent 
+https://www.nuget.org/packages/Microsoft.Diagnostics.Tracing.TraceEvent
+
+Trace işlemi için önce bir session ve bu session üzerinde istenen Event Provider'lar aktfi edilmeli.
+Proviver listesi:
+```CMD
+logman query providers > plist.txt
+```
+Session > Realtime, dosya (.etl) veya her ikisi de olabilir.
+TraceEventSession ile session oluşturulur.
+ETWTraceEventSource ile session'da oluşturulan bilgiler okunur.
+Özet:
+https://blogs.msdn.microsoft.com/dotnet/2013/08/15/announcing-traceevent-monitoring-and-diagnostics-for-the-cloud/
+
 
 
 
@@ -20,12 +32,8 @@ Event lerin yazılacağı alternatifler
 
 text dosya, xml dosya, console, ETW, EventLog
 
-https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/trace-listeners
-
-Interpreting Network Tracing
 
 https://docs.microsoft.com/en-us/dotnet/framework/network-programming/interpreting-network-tracing
-
 App.config e eklenmesi gereken:
 
 https://docs.microsoft.com/en-us/dotnet/framework/network-programming/how-to-configure-network-tracing
@@ -74,32 +82,39 @@ logman stop "xappsession" -ets
 tracerpt xappsystemnet.etl -of csv -o xappsystemnet.csv // tracerpt "xappsystemnet.etl" -y -o "xappsystemnet.xml" -of xml
 ```
 
+### github üzerinde proje bilgileri
+https://github.com/Microsoft/perfview/blob/master/documentation/TraceEvent/TraceEventLibrary.md
+The Microsoft.Diagnostics.Tracing.TraceEvent Library
+https://github.com/Microsoft/Microsoft.Diagnostics.Tracing.Logging
+Logging using ETW and EventSource
 
 
 ### Data / Ado.net trace için
 
 https://lowleveldesign.org/2012/09/07/diagnosing-ado-net-with-etw-traces/
-
-https://msdn.microsoft.com/en-us/library/ms971550.aspx?f=255&MSPPError=-2147217396		
-
+https://msdn.microsoft.com/en-us/library/ms971550.aspx?f=255&MSPPError=-2147217396
 https://www.developer.com/net/csharp/article.php/10918_3723011_2/ADONET-Trace-Logging.htm
-
 https://www.codeguru.com/csharp/.net/net_debugging/logging/article.php/c14769/ADONET-Trace-Logging.htm
 
 
-CLR Events
+### CLR Events
 
 https://docs.microsoft.com/en-us/dotnet/framework/performance/etw-events-in-the-common-language-runtime
-
 https://docs.microsoft.com/en-us/dotnet/framework/performance/clr-etw-providers
-
 https://docs.microsoft.com/en-us/dotnet/framework/performance/clr-etw-events
 
-
-
 CLR Event'ler için Performance Counter yerine ETW'yi kullanmayı öneriyor.
-
 http://labs.criteo.com/2018/06/replace-net-performance-counters-by-clr-event-tracing/
-
 http://labs.criteo.com/2018/07/grab-etw-session-providers-and-events/
 
+### IIS log events
+
+https://docs.microsoft.com/en-us/windows/desktop/http/types-of-errors-logged-by-the-http-server-api
+HTTPERR: Types of Errors Logged by the HTTP Server API
+
+
+
+
+## Diğer bilgiler
+https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/trace-listeners
+Interpreting Network Tracing
