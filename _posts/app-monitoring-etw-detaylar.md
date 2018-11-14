@@ -12,10 +12,10 @@ https://www.nuget.org/packages/Microsoft.Diagnostics.Tracing.TraceEvent
 
 ## Tracing alternatifleri
 
-CMD logman
-APP Performance Monitor > Data Collector Sets > Event Trace Session > [New Data Collector Set] + Providers
-APP PerfView > Collect
-CODE Microsoft.Diagnostics.Tracing.TraceEvent library
+> CMD logman
+> APP Performance Monitor > Data Collector Sets > Event Trace Session > [New Data Collector Set] + Providers 
+> APP PerfView > Collect
+> CODE Microsoft.Diagnostics.Tracing.TraceEvent library
 
 
 ### Kod ile süreç:
@@ -62,6 +62,16 @@ logman start "xappsession" -p "{BDE5930E-34C9-4E2F-A6EC-89E1F1EA69CC}" -o "xapps
 --Made some request from the application to trigger some HttpWebRequest operation.
 logman stop "xappsession" -ets
 tracerpt xappsystemnet.etl -of csv -o xappsystemnet.csv // tracerpt "xappsystemnet.etl" -y -o "xappsystemnet.xml" -of xml
+```
+
+---Bir uygulada birden fazla session başlatabilmek için
+
+```C#
+Task.Factory.StartNew(delegate
+{
+      _traceSource.Process()
+});
+				
 ```
 
 
@@ -147,9 +157,20 @@ https://github.com/Microsoft/Tx
 
 
 
+# ETW okumanın çalışmadığı durumlarda
+Örneğin System.Net HttpWebRequest için (config'de initializeData ile provider Guid belirtip) logman ile event'lar .etl'e kaydedilebiliyor ama kod ile okunamıyor.
+
+Böyle durumlar için alternatif app.config'de diagnostic nodunda EventLog'a yazılır ve kod ile buradan okunabilir.
+Bunun için:
+EventLogWatcher class
+https://docs.microsoft.com/en-us/dotnet/api/system.diagnostics.eventing.reader.eventlogwatcher?redirectedfrom=MSDN&view=netframework-4.7.2
+https://msdn.microsoft.com/library/62e006d3-9fab-4fdf-a8f8-e23d05498cd4?f=255&MSPPError=-2147217396
+How to: Subscribe to Events in an Event Log
 
 
 
-## Diğer bilgiler
+
+
+# Diğer bilgiler
 https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/trace-listeners
 Interpreting Network Tracing
