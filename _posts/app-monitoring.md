@@ -69,6 +69,10 @@ RUN echo "http.cors.enabled: true" &gt;&gt; /usr/share/elasticsearch/config/elas
 RUN echo "http.cors.allow-origin: '*'" &gt;&gt; /usr/share/elasticsearch/config/elasticsearch.yml
 docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.3.2
 
+Elastic Search yönetim
+https://github.com/ElasticHQ/elasticsearch-HQ
+Monitoring and Management Web Application for ElasticSearch instances and clusters.
+
 .net api
 https://github.com/elastic/elasticsearch-net
 

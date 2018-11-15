@@ -113,6 +113,31 @@ logman stop "xappsession" -ets
 tracerpt xappsystemnet.etl -of csv -o xappsystemnet.csv // tracerpt "xappsystemnet.etl" -y -o "xappsystemnet.xml" -of xml
 ```
 
+Örn: üstteki 3. örnekteki gibi bir izleme .etl olarak keydedilip xml'e çevrildiğinde alttaki gibi kayıtlar oluşur.
+      -app/web.config için Shared listener örneği aşağıda.
+
+```
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+	<System>
+		<Provider Guid="{bde5930e-34c9-4e2f-a6ec-89e1f1ea69cc}" />
+		<EventID>0</EventID>
+		<Version>0</Version>
+		<Level>8</Level>
+		<Task>0</Task>
+		<Opcode>0</Opcode>
+		<Keywords>0x0</Keywords>
+		<TimeCreated SystemTime="2018-11-12T16:12:12.586128800+02:59" />
+		<Correlation ActivityID="{00000000-0000-0000-0000-000000000000}" />
+		<Execution ProcessID="14596" ThreadID="21060" ProcessorID="0" KernelTime="0" UserTime="15" />
+		<Channel />
+		<Computer />
+	</System>
+		<Data>[21060] HttpWebRequest#22379747 - Request: GET /2.2/answers?order=desc&amp;sort=activity&amp;site=stackoverflow HTTP/1.1
+</Data>
+</Event>
+```
+
+
 logman kullanımı  
 https://blogs.technet.microsoft.com/askperf/2008/05/13/two-minute-drill-logman-exe/
 https://blogs.msdn.microsoft.com/sudeepg/2009/02/26/capturing-and-analyzing-an-etw-trace-event-tracing-for-windows/     
