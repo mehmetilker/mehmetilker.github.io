@@ -487,3 +487,8 @@ xperf üzerinden ETW anlatımı
 https://www.codeproject.com/articles/570690/application-analysis-with-event-tracing-for-window
 Masaüstü uygulaması
 https://www.codeproject.com/Articles/632390/EtwDataViewer-Analyze-visualize-and-make-sense-of
+
+muhtemel eski yöntem
+https://blogs.msdn.microsoft.com/dmetzgar/2013/01/24/capturing-a-profile-in-production-based-on-etw-events/
+nuget: Microsoft.Samples.Eventing library
+class: EventTraceWatcher
