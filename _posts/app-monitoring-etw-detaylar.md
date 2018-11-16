@@ -3,7 +3,7 @@
 - [Nasıl Trace yapılır](#nas%C4%B1l-trace-yap%C4%B1l%C4%B1r)
       - [Tracing alternatifleri](#tracing-alternatifleri)
             - [logman ile session oluşturmak](#logman-ile-session-olu%C5%9Fturmak)
-            - [Kod ile süreç:](#kod-ile-s%C3%BCre%C3%A7)
+            - [Kod ile süreç](#kod-ile-s%C3%BCre%C3%A7)
             - [Uygulamada app.config ile tracing](#uygulamada-appconfig-ile-tracing)
             - [Github üzerinde ETW proje bilgileri](#github-%C3%BCzerinde-etw-proje-bilgileri)
       - [Bazı Provider'lar için kaynaklar](#baz%C4%B1-providerlar-i%C3%A7in-kaynaklar)
@@ -31,15 +31,13 @@ https://www.nuget.org/packages/Microsoft.Diagnostics.Tracing.EventSource/
 >Okumak için: TraceEvent
 https://www.nuget.org/packages/Microsoft.Diagnostics.Tracing.TraceEvent
 
-
 ETW Kavram detayları
-https://docs.microsoft.com/en-us/message-analyzer/common-provider-configuration-settings-summary
-https://docs.microsoft.com/en-us/message-analyzer/system-etw-provider-event-keyword-level-settings
-
+<https://docs.microsoft.com/en-us/message-analyzer/common-provider-configuration-settings-summary>
+<https://docs.microsoft.com/en-us/message-analyzer/system-etw-provider-event-keyword-level-settings>
 
 Consume ETW events
-https://blogs.msdn.microsoft.com/dotnet/2013/08/15/announcing-traceevent-monitoring-and-diagnostics-for-the-cloud/
-https://blogs.msdn.microsoft.com/vancem/2013/08/15/traceevent-etw-library-published-as-a-nuget-package/
+<https://blogs.msdn.microsoft.com/dotnet/2013/08/15/announcing-traceevent-monitoring-and-diagnostics-for-the-cloud/>
+<https://blogs.msdn.microsoft.com/vancem/2013/08/15/traceevent-etw-library-published-as-a-nuget-package/>
 https://blogs.msdn.microsoft.com/vancem/2014/03/15/walk-through-getting-started-with-etw-traceevent-nuget-samples-package/
 EtwTraceEventSource which lets you read the stream of ETW events
 https://blogs.msdn.microsoft.com/vancem/2012/12/20/using-tracesource-to-log-etw-data-to-a-file/
@@ -65,20 +63,21 @@ There is a companion post about the EventSource  NuGet package which allows you 
 
 Trace işlemi için önce bir session ve bu session üzerinde istenen Event Provider'lar aktfi edilmeli.
 Proviver listesi:
+
 ```CMD
 logman query providers > plist.txt
 ```
+
 Session > Realtime, dosya (.etl) veya her ikisi de olabilir.
 
 Provider ayarları: Provider detaylarında Level ve diğer seçenekler belirtilir. (Keywords...)
 Session ne kadar süre aktif kalacak ve Windows Start up da otomatik başlatılacak mı gibi tanımlar da yapılabilir.
 
-
 ## Tracing alternatifleri
 
 > CMD logman, xperf, sysinternals tools
-> APP Performance Monitor > Data Collector Sets > Event Trace Session > [New Data Collector Set] + Providers      
-> APP PerfView > Collect      
+> APP Performance Monitor > Data Collector Sets > Event Trace Session > [New Data Collector Set] + Providers  
+> APP PerfView > Collect  
 > CODE Microsoft.Diagnostics.Tracing.TraceEvent library
 
 
@@ -116,7 +115,7 @@ tracerpt xappsystemnet.etl -of csv -o xappsystemnet.csv // tracerpt "xappsystemn
 Örn: üstteki 3. örnekteki gibi bir izleme .etl olarak keydedilip xml'e çevrildiğinde alttaki gibi kayıtlar oluşur.
       -app/web.config için Shared listener örneği aşağıda.
 
-```
+```XML
 <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
 	<System>
 		<Provider Guid="{bde5930e-34c9-4e2f-a6ec-89e1f1ea69cc}" />
@@ -132,32 +131,31 @@ tracerpt xappsystemnet.etl -of csv -o xappsystemnet.csv // tracerpt "xappsystemn
 		<Channel />
 		<Computer />
 	</System>
-		<Data>[21060] HttpWebRequest#22379747 - Request: GET /2.2/answers?order=desc&amp;sort=activity&amp;site=stackoverflow HTTP/1.1
-</Data>
+	<Data>[21060] HttpWebRequest#22379747 - Request: GET /2.2/answers?order=desc&amp;sort=activity&amp;site=stackoverflow HTTP/1.1
+      </Data>
 </Event>
 ```
 
-
 logman kullanımı  
 https://blogs.technet.microsoft.com/askperf/2008/05/13/two-minute-drill-logman-exe/
-https://blogs.msdn.microsoft.com/sudeepg/2009/02/26/capturing-and-analyzing-an-etw-trace-event-tracing-for-windows/     
+https://blogs.msdn.microsoft.com/sudeepg/2009/02/26/capturing-and-analyzing-an-etw-trace-event-tracing-for-windows/  
 Powershell den (Admin elev.) event listeleme
 Get-WinEvent Microsoft-IIS-Logging/Logs
 tüm event log listesi
-Get-WinEvent -ListLog * | Format-List -Property LogName   
+Get-WinEvent -ListLog * | Format-List -Property LogName  
 https://letitknow.wordpress.com/2012/09/02/powershell-and-the-applications-and-services-logs/
 
-Benzer araç xperf (Windows Performance Analyzer (GUI)):     
+Benzer araç xperf (Windows Performance Analyzer (GUI)):  
+
 ```CMD
 xperf.exe -start <SomeName> -on <NameOfYourRegisteredProvider>
 xperf.exe -start FirstETW -on Function-Entry-Exit-Provider
 ```
 
-Sysinternals tools (dbgview.exe)   
+Sysinternals tools (dbgview.exe)  
 https://www.codeproject.com/articles/802379/collect-net-applications-traces-with-sysinternals
 
-
-### Kod ile süreç:
+### Kod ile süreç
 
 TraceEventSession ile session oluşturulur.
 ETWTraceEventSource ile session'da oluşturulan bilgiler okunur.
@@ -173,9 +171,8 @@ session.EnableProvider("Microsoft-Windows-IIS-Logging", TraceEventLevel.Informat
 Task.Factory.StartNew(delegate
 {
       _traceSource.Process()
-});				
+});
 ```
-
 
 ### Uygulamada app.config ile tracing
 
@@ -203,12 +200,11 @@ ETW Tracing ve diğerleri için SharedListeners örneği:
     </sharedListeners>
 ```
 
-
-
 ### Github üzerinde ETW proje bilgileri
-https://github.com/Microsoft/perfview/blob/master/documentation/TraceEvent/TraceEventLibrary.md
+
+<https://github.com/Microsoft/perfview/blob/master/documentation/TraceEvent/TraceEventLibrary.md>
 The Microsoft.Diagnostics.Tracing.TraceEvent Library
-https://github.com/Microsoft/Microsoft.Diagnostics.Tracing.Logging
+<https://github.com/Microsoft/Microsoft.Diagnostics.Tracing.Logging>
 Logging using ETW and EventSource
 
 ## Bazı Provider'lar için kaynaklar
@@ -219,7 +215,6 @@ https://lowleveldesign.org/2012/09/07/diagnosing-ado-net-with-etw-traces/
 https://msdn.microsoft.com/en-us/library/ms971550.aspx?f=255&MSPPError=-2147217396
 https://www.developer.com/net/csharp/article.php/10918_3723011_2/ADONET-Trace-Logging.htm
 https://www.codeguru.com/csharp/.net/net_debugging/logging/article.php/c14769/ADONET-Trace-Logging.htm
-
 
 ### CLR Events
 
@@ -240,10 +235,7 @@ session.EnableProvider(Microsoft.Diagnostics.Tracing.Parsers.IisTraceEventParser
 // We also turn on CLR events because we need them to decode Stacks and we also get exception events (and their stacks)
 ClrTraceEventParser.ProviderGuid, TraceEventLevel.Error, (ulong)ClrTraceEventParser.Keywords.Exception
 
-
 ```
-
-
 
 ### IIS log events
 
@@ -255,6 +247,7 @@ Event Viewer'da takip için&gt;  Applications and services logs &gt; Microsoft &
 Ya da uygulama ile session oluşturup "Microsoft-Windows-IIS-Logging" provider'i ile loglar takip edilebilir.
 
 -Uygulama içeriğinden (server side code) bağımsız takip edilebilecek 3 şey:
+
 1. Http Logs
 2. Failed Trace Logs
 3. Http Err Logs
@@ -426,9 +419,8 @@ https://github.com/tomasr/frebrilator/blob/master/Frebrilator/EventAggregator.cs
 https://github.com/neuecc/EtwStream
 https://github.com/Microsoft/perfview/tree/master/src/TraceEvent/Samples
 
-
-Reactive    
-https://www.tonytruong.net/starting-reactive-extensions-with-existing-events-in-c/  
+Reactive  
+(https://www.tonytruong.net/starting-reactive-extensions-with-existing-events-in-c/)
 https://blogs.endjin.com/2014/04/event-stream-manipulation-using-rx-part-1/  
 https://blogs.endjin.com/2014/05/event-stream-manipulation-using-rx-part-2/  
 http://reactivex.io/tutorials.html  
@@ -437,13 +429,11 @@ https://github.com/Microsoft/Tx/blob/master/Doc/Readme.md
 https://github.com/Microsoft/Tx/blob/master/Samples/LinqPad/Queries/IE_IIS/Readme.md
 https://github.com/Microsoft/Tx
 
-
-
 # ETW okumanın çalışmadığı durumlarda
 
 Örneğin System.Net HttpWebRequest için (config'de initializeData ile provider Guid belirtip) logman ile event'lar .etl'e kaydedilebiliyor ama kod ile okunamıyor.
 
-Böyle durumlar için alternatif app.config'de diagnostic nodunda EventLog'a yazılır ve kod ile buradan okunabilir.       
+Böyle durumlar için alternatif app.config'de diagnostic nodunda EventLog'a yazılır ve kod ile buradan okunabilir.  
 Bunun için:       
 EventLogWatcher class   
 https://docs.microsoft.com/en-us/dotnet/api/system.diagnostics.eventing.reader.eventlogwatcher?redirectedfrom=MSDN&view=netframework-4.7.2      
