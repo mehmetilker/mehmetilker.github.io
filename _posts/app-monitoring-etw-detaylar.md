@@ -408,6 +408,9 @@ https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/ther
 Open hardware monitor
 https://openhardwaremonitor.org/screenshots/
 
+Bandwith tracing için
+<https://social.msdn.microsoft.com/Forums/en-US/aa9b1fed-b823-4a9c-973d-1dc0554f994c/understanding-etw?forum=csharpgeneral>
+
 
 ## Event yöntemi için Reactive kullanımı
 
