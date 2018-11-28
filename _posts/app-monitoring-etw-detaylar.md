@@ -226,6 +226,12 @@ CLR Event'ler için Performance Counter yerine ETW'yi kullanmayı öneriyor.
 http://labs.criteo.com/2018/06/replace-net-performance-counters-by-clr-event-tracing/
 http://labs.criteo.com/2018/07/grab-etw-session-providers-and-events/
 
+
+https://blogs.msdn.microsoft.com/maoni/2015/11/20/are-you-glad/
+https://blogs.msdn.microsoft.com/maoni/2016/09/19/556/
+https://blogs.msdn.microsoft.com/maoni/2018/09/09/glad-part-2/#comment-27945
+
+
 ```C#
 --Bazı provider'lar için örnek anahtar tanımları
 session.EnableKernelProvider(Microsoft.Diagnostics.Tracing.Parsers.KernelTraceEventParser.Keywords.DiskIO);
