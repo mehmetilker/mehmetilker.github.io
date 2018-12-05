@@ -32,3 +32,24 @@ maller variances result in more data that is close to average.
 
 https://github.com/gabrielweyer/HorseSpeed
 HorseSpeed will compute the mean, median, standard deviation, and percentile(s) of the time-taken field in an IIS log.
+
+LogParser Studio ile Standart sapmalı sorgu çekmek için
+
+```sql
+
+/* Returns the number of times a particular page (in this case .as* files) was hit, with the average, minimum, and maximum time taken, along with the standard deviation. */
+
+SELECT 
+TO_LOWERCASE(cs-uri-stem) AS csUriStem, COUNT(*) AS Hits
+, DIV ( MUL(1.0, SUM(time-taken)), Hits ) AS AvgTime
+, SQRROOT ( SUB ( DIV ( MUL(1.0, SUM(SQR(time-taken)) ), Hits ) 
+, SQR(AvgTime) ) ) AS StDev, Max(time-taken) AS Max, Min(time-taken) AS Min
+, TO_REAL(STRCAT(TO_STRING(sc-status)
+, STRCAT('.', TO_STRING(sc-substatus)))) AS Status
+, Min(TO_LOCALTIME(date)) AS LastUpdate
+FROM '[LOGFILEPATH]'
+GROUP BY TO_LOWERCASE(cs-uri-stem), TO_REAL(STRCAT(TO_STRING(sc-status), STRCAT('.', TO_STRING(sc-substatus)))) 
+HAVING COUNT(*) > 2
+ORDER BY Hits Desc
+
+```
