@@ -80,6 +80,23 @@ Session ne kadar süre aktif kalacak ve Windows Start up da otomatik başlatıla
 > APP PerfView > Collect  
 > CODE Microsoft.Diagnostics.Tracing.TraceEvent library
 
+### Perview örnekleri
+
+```
+pattern:
+provider:keywords:level
+
+PerfView /OnlyProviders=*MyCompany-WebServices collect
+PerfView /OnlyProviders=*MyCompany-WebServices:*:Information collect
+
+--System.Diagnostics.Eventing.FrameworkEventSource için keyword örnekler
+ulong threadTransfer = 0x10;
+ulong dynamicTypeUsage = 0x8;
+ulong netClient = 0x4; //giden http isteklerini takip için
+ulong loader = 0x1;
+
+```
+
 
 ### logman ile session oluşturmak
 
